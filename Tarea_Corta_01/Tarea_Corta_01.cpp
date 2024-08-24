@@ -1,5 +1,5 @@
 /*Tarea Corta 1
-Autores:
+Autores: Carmen Hidalgo Paz &
 Curso: Estructuras de Datos
 */
 
@@ -18,7 +18,7 @@ using std::string;
 int ingresarTipoStack() {
 	int Opcion;
 
-	cout << "Porfavor seleccione el tipo de pila que desea usar:" << endl;
+	cout << "Por favor seleccione el tipo de pila que desea usar:" << endl;
 	cout << "Ingrese '1' para utilizar un ArrayStack" << endl;
 	cout << "Ingrese '2' para utilizar un LinkedStack" << endl;
 	cin >> Opcion;
@@ -34,20 +34,46 @@ int ingresarTipoStack() {
 	return Opcion;
 }
 
-void dividirOperacion(Stack<char>* operadores, Stack<int>* numeros, string Operacion) {
+void dividirOperacion(Stack<char>* operadores, Stack<double>* numeros, string Operacion) {
+	double numero = 0;
+	double decimal = 1;
+	bool guardarNum = false;
+	bool numDecimal = false;
+
 	for (int i = 0; i < Operacion.length(); i++) {
-	
+
 		if (isdigit(Operacion[i])) {
-			numeros->push(Operacion[i]-'0');
+			if (numDecimal) {
+				decimal = decimal * 0.1;
+				numero = numero + (Operacion[i] - '0') * decimal;
+			}
+			else {
+				numero = numero * 10 + (Operacion[i] - '0');
+			}
+			guardarNum = true;
 		}
-		else if (!isdigit(Operacion[i])) {
+		else if (Operacion[i] == '.') {
+			numDecimal = true;
+		}
+		else {
+
+			if (guardarNum) {
+				numeros->push(numero);
+				numero = 0;
+				decimal = 1;
+				guardarNum = false;
+				numDecimal = false;
+			}
+
 			operadores->push(Operacion[i]);
 		}
-		
-		
 
-		}
 	}
+
+	if (guardarNum) {
+		numeros->push(numero);
+	}
+}
 
 
 int main() {
@@ -55,8 +81,8 @@ int main() {
 	int opc = ingresarTipoStack();
 
 	if (opc == 1) {
-		Stack<char>* Operadores = new ArrayStack<char>(5);
-		Stack<int>* Numeros = new ArrayStack<int>(5);
+		Stack<char>* Operadores = new ArrayStack<char>();
+		Stack<double>* Numeros = new ArrayStack<double>();
 		cin.ignore();
 		cout << "Ingrese una operación matematica: ";
 		getline(cin, operacion);
@@ -69,7 +95,7 @@ int main() {
 	}
 	else if (opc == 2) {
 		Stack<char>* Operadores = new LinkedStack<char>();
-		Stack<int>* Numeros = new LinkedStack<int>();
+		Stack<double>* Numeros = new LinkedStack<double>();
 		cin.ignore();
 		cout << "Ingrese una operación matematica: ";
 		getline(cin, operacion);
