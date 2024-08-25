@@ -1,11 +1,11 @@
 /*Tarea Corta 1
-Autores: Carmen Hidalgo Paz & Adrian Ugalde
 Autores: Carmen Hidalgo Paz &
 Curso: Estructuras de Datos
 */
 
 #include <iostream>
 #include <string>
+#include <stdio.h>
 #include "Stack.h"
 #include "ArrayStack.h"
 #include "Node.h"
@@ -15,8 +15,8 @@ using std::cout;
 using std::cin;
 using std::endl;
 using std::string;
+using std::getline;
 
-// Funcion para generar mensajes de inicio (selección y error)
 int ingresarTipoStack() {
 	int Opcion;
 
@@ -36,7 +36,6 @@ int ingresarTipoStack() {
 	return Opcion;
 }
 
-//Funcion para hacer la separacion de numeros y operandos
 void dividirOperacion(Stack<char>* operadores, Stack<double>* numeros, string Operacion) {
 	double numero = 0;
 	double decimal = 1;
@@ -61,7 +60,7 @@ void dividirOperacion(Stack<char>* operadores, Stack<double>* numeros, string Op
 		else if (Operacion[i] == '.') {
 			numDecimal = true;
 		}
-		else if(!isdigit(Operacion[i])) {//Reconoce si es un valor no numerico
+		else if (!isdigit(Operacion[i])) {//Reconoce si es un valor no numerico
 
 			if (guardarNum) {
 				numeros->push(numero);
@@ -71,7 +70,7 @@ void dividirOperacion(Stack<char>* operadores, Stack<double>* numeros, string Op
 				numDecimal = false;
 			}
 			for (char valores : Operacion) {
-				for (int i = 0; i < numCaracter;i++) {
+				for (int i = 0; i < numCaracter; i++) {
 					if (valores == caracter[i]) {
 						opValido = true;
 						operadores->push(valores);
@@ -82,39 +81,39 @@ void dividirOperacion(Stack<char>* operadores, Stack<double>* numeros, string Op
 			}
 		}
 
-	for (int i = 0; i < Operacion.length(); i++) {
+		for (int i = 0; i < Operacion.length(); i++) {
 
-		if (isdigit(Operacion[i])) {
-			if (numDecimal) {
-				decimal = decimal * 0.1;
-				numero = numero + (Operacion[i] - '0') * decimal;
+			if (isdigit(Operacion[i])) {
+				if (numDecimal) {
+					decimal = decimal * 0.1;
+					numero = numero + (Operacion[i] - '0') * decimal;
+				}
+				else {
+					numero = numero * 10 + (Operacion[i] - '0');
+				}
+				guardarNum = true;
+			}
+			else if (Operacion[i] == '.') {
+				numDecimal = true;
 			}
 			else {
-				numero = numero * 10 + (Operacion[i] - '0');
-			}
-			guardarNum = true;
-		}
-		else if (Operacion[i] == '.') {
-			numDecimal = true;
-		}
-		else {
 
-			if (guardarNum) {
-				numeros->push(numero);
-				numero = 0;
-				decimal = 1;
-				guardarNum = false;
-				numDecimal = false;
-			}
+				if (guardarNum) {
+					numeros->push(numero);
+					numero = 0;
+					decimal = 1;
+					guardarNum = false;
+					numDecimal = false;
+				}
 
-			operadores->push(Operacion[i]);
+				operadores->push(Operacion[i]);
+			}
+		}
+
+		if (guardarNum) {
+			numeros->push(numero);
 		}
 	}
-
-	if (guardarNum) {
-		numeros->push(numero);
-	}
-}
 
 
 int main() {
