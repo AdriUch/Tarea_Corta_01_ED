@@ -1,9 +1,6 @@
 /*Tarea Corta 1
-<<<<<<< HEAD
 Autores: Carmen Hidalgo Paz & Adrian Ugalde
-=======
 Autores: Carmen Hidalgo Paz &
->>>>>>> 6b411ea696b45a7388e783152c330d521945c32e
 Curso: Estructuras de Datos
 */
 
@@ -39,16 +36,12 @@ int ingresarTipoStack() {
 	return Opcion;
 }
 
-<<<<<<< HEAD
 //Funcion para hacer la separacion de numeros y operandos
-=======
->>>>>>> 6b411ea696b45a7388e783152c330d521945c32e
 void dividirOperacion(Stack<char>* operadores, Stack<double>* numeros, string Operacion) {
 	double numero = 0;
 	double decimal = 1;
 	bool guardarNum = false;
 	bool numDecimal = false;
-<<<<<<< HEAD
 	bool opValido = false;
 	char operando = ' ';
 	const char caracter[] = { '+', '-', '*', '/', '^', '(', ')' }; // Crea un arreglo local con los operandos validos
@@ -89,8 +82,6 @@ void dividirOperacion(Stack<char>* operadores, Stack<double>* numeros, string Op
 			}
 		}
 
-=======
-
 	for (int i = 0; i < Operacion.length(); i++) {
 
 		if (isdigit(Operacion[i])) {
@@ -118,8 +109,6 @@ void dividirOperacion(Stack<char>* operadores, Stack<double>* numeros, string Op
 
 			operadores->push(Operacion[i]);
 		}
-
->>>>>>> 6b411ea696b45a7388e783152c330d521945c32e
 	}
 
 	if (guardarNum) {
