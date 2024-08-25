@@ -114,7 +114,7 @@ void dividirOperacion(Stack<char>* operadores, Stack<double>* numeros, string Op
 			numeros->push(numero);
 		}
 	}
-
+}
 
 int main() {
 	string operacion;
