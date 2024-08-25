@@ -1,6 +1,7 @@
 /*Tarea Corta 1
 Autores: Carmen Hidalgo Paz & Adrian Ugalde Chaves
 Curso: Estructuras de Datos
+Asignación: Tarea Corta 1 - Pilas
 */
 
 #include <iostream>
@@ -19,6 +20,10 @@ using std::string;
 using std::getline;
 using std::invalid_argument;
 using std::runtime_error;
+using std::exception;
+
+
+bool error = false;     // Muestra si se encontró un error
 
 // Función para obtener la precedencia del operador
 int precedencia(char op) {
@@ -36,42 +41,54 @@ int precedencia(char op) {
     }
 }
 
+
 // Función para procesar una operación
 void procesarOperacion(Stack<char>* operadores, Stack<double>* numeros) {
-    if (numeros->getSize() < 2 || operadores->isEmpty()) {
-        throw runtime_error("No hay suficientes operandos u operadores.");
-    }
 
-    double B = numeros->pop();
-    double A = numeros->pop();
-    char op = operadores->pop();
-
-    double resultado;
-    switch (op) {
-    case '+':
-        resultado = A + B;
-        break;
-    case '-':
-        resultado = A - B;
-        break;
-    case '*':
-        resultado = A * B;
-        break;
-    case '/':
-        if (B == 0) {
-            throw runtime_error("División por cero.");
+    try {
+        // Si solo queda un número en el stack (la respuesta)
+        // Y todavía hay operadores, se detecta el error
+        if (numeros->getSize() == 1 && operadores->getSize() > 0) {
+            throw runtime_error("No hay suficientes operandos.");
         }
-        resultado = A / B;
-        break;
-    case '^':
-        resultado = pow(A, B);
-        break;
-    default:
-        throw invalid_argument("Operador no válido.");
-    }
 
-    numeros->push(resultado);
+        double B = numeros->pop();
+        double A = numeros->pop();
+        char op = operadores->pop();
+
+        double resultado;
+        switch (op) {
+        case '+':
+            resultado = A + B;
+            break;
+        case '-':
+            resultado = A - B;
+            break;
+        case '*':
+            resultado = A * B;
+            break;
+        case '/':
+            if (B == 0) {
+                throw runtime_error("Division por cero.");
+            }
+            resultado = A / B;
+            break;
+        case '^':
+            resultado = pow(A, B);
+            break;
+        default:
+            throw invalid_argument("Operador no valido.");
+        }
+
+        numeros->push(resultado);
+    }
+    catch (const exception& errorDetectado) {
+        operadores->clear();    // Se limpia la pila de operadores
+        error = true;           // Se detecta que hay un error
+        std::cerr << "Error: " << errorDetectado.what() << std::endl;
+    }
 }
+
 //Funcion que remueve los espacios del string
 string removerEspacios(string operacion) {
     string resultado;
@@ -79,8 +96,8 @@ string removerEspacios(string operacion) {
     for (int i = 0; i < operacion.length(); ++i) {
         char caracter = operacion[i];
 
-        if (caracter != ' ') {
-            resultado += caracter;
+        if (caracter != ' ') {  // Se vuelve a escribir todo lo que no sea un espacio
+            resultado = resultado + caracter;
         }
     }
     return resultado;
@@ -88,18 +105,18 @@ string removerEspacios(string operacion) {
 
 // Función para evaluar una expresión infija
 void dividirOperacion(Stack<char>* operadores, Stack<double>* numeros, const string& expresion) {
-    double numero = 0;
-    double decimal = 1;
-    bool guardarNum = false;
-    bool numDecimal = false;
+    double numero = 0;          // El número resultante
+    double decimal = 1;         // La parte decimal
+    bool guardarNum = false;    // Se guarda el número en la pila
+    bool numDecimal = false;    // Es un número con decimales
 
     for (size_t i = 0; i < expresion.length(); i++) {
         if (isdigit(expresion[i])) {
-            if (numDecimal) {
+            if (numDecimal) {   // Si hay decimales
                 decimal *= 0.1;
                 numero += (expresion[i] - '0') * decimal;
             }
-            else {
+            else {              // La parte entera
                 numero = numero * 10 + (expresion[i] - '0');
             }
             guardarNum = true;
@@ -108,7 +125,7 @@ void dividirOperacion(Stack<char>* operadores, Stack<double>* numeros, const str
             numDecimal = true;
         }
         else {
-            if (guardarNum) {
+            if (guardarNum) {   // Se guarda en la pila y se reinician los valores
                 numeros->push(numero);
                 numero = 0;
                 decimal = 1;
@@ -123,10 +140,17 @@ void dividirOperacion(Stack<char>* operadores, Stack<double>* numeros, const str
                 while (!operadores->isEmpty() && operadores->topValue() != '(') {
                     procesarOperacion(operadores, numeros);
                 }
-                if (operadores->isEmpty()) {
-                    throw runtime_error("Paréntesis desbalanceados.");
+                
+                try {
+                    if (operadores->isEmpty()) {
+                        throw runtime_error("Parentesis desbalanceados.");
+                    }
+                    operadores->pop(); // Elimina '(' de la pila
                 }
-                operadores->pop(); // Elimina '(' de la pila
+                catch (const runtime_error& errorDetectado) {
+                    error = true;      // Se detecta un error
+                    std::cerr << "Error: " << errorDetectado.what() << std::endl;
+                }
             }
             else { // Es un operador
                 while (!operadores->isEmpty() && operadores->topValue() != '(' &&
@@ -139,14 +163,21 @@ void dividirOperacion(Stack<char>* operadores, Stack<double>* numeros, const str
     }
 
     if (guardarNum) {
-        numeros->push(numero);
+        numeros->push(numero);         // Se guarda el número en la pila
     }
 
-    while (!operadores->isEmpty()) {
-        if (operadores->topValue() == '(') {
-            throw runtime_error("Paréntesis desbalanceados.");
+    try {
+        while (!operadores->isEmpty()) {
+            if (operadores->topValue() == '(') {
+                throw runtime_error("Parentesis desbalanceados.");
+            }
+            procesarOperacion(operadores, numeros);
         }
-        procesarOperacion(operadores, numeros);
+    }
+    catch (const runtime_error& errorDetectado) {
+        operadores->clear();           // Se limpia el stack
+        error = true;                  // Se detecta un error
+        std::cerr << "Error: " << errorDetectado.what() << std::endl;
     }
 }
 
@@ -174,24 +205,38 @@ int main() {
     int opc = ingresarTipoStack();
 
     if (opc == 1) {
+        // Se crean las pilas
         Stack<char>* Operadores = new ArrayStack<char>();
         Stack<double>* Numeros = new ArrayStack<double>();
         cin.ignore();
-        cout << "Ingrese una operación matemática: ";
+        // Se le pide al usuario que ingrese una operación
+        cout << "Ingrese una operacion matematica: ";
         getline(cin, operacion);
+        // Se divide la operación ingresado en una pila de números y
+        // una pila de operadores
         dividirOperacion(Operadores, Numeros, removerEspacios(operacion));
-        cout << "Resultado: " << Numeros->topValue() << endl;
+        // Si no se encontró ningún error se imprime el resultado
+        if (error == false) {
+            cout << "Resultado: " << Numeros->topValue() << endl;
+        }
         delete Operadores;
         delete Numeros;
     }
     else if (opc == 2) {
+        // Se crean las pilas
         Stack<char>* Operadores = new LinkedStack<char>();
         Stack<double>* Numeros = new LinkedStack<double>();
         cin.ignore();
-        cout << "Ingrese una operación matemática: ";
+        // Se le pide al usuario que ingrese una operación
+        cout << "Ingrese una operacion matematica: ";
         getline(cin, operacion);
+        // Se divide la operación ingresado en una pila de números y
+        // una pila de operadores
         dividirOperacion(Operadores, Numeros, removerEspacios(operacion));
-        cout << "Resultado: " << Numeros->topValue() << endl;
+        // Si no se encontró ningún error se imprime el resultado
+        if (error == false) {
+            cout << "Resultado: " << Numeros->topValue() << endl;
+        }
         delete Operadores;
         delete Numeros;
     }
