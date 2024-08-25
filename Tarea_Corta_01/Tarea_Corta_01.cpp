@@ -36,13 +36,27 @@ int ingresarTipoStack() {
 	return Opcion;
 }
 
+string removerEspacios(string operacion) {
+	string resultado;
+	
+	for (int i = 0; i < operacion.length(); ++i) {
+		char caracter = operacion[i];
+
+		if (caracter != ' ') {
+			resultado += caracter;
+		}
+	}
+	return resultado;
+}
+
 void dividirOperacion(Stack<char>* operadores, Stack<double>* numeros, string Operacion) {
-		double numero = 0;
+	double numero = 0;
 	double decimal = 1;
 	bool guardarNum = false;
 	bool numDecimal = false;
 	const char caracter[] = { '+', '-', '*', '/', '^', '(', ')' }; // Crea un arreglo local con los operandos validos
 	const int numCaracter = sizeof(caracter) / sizeof(caracter[0]); // Guarda el tamaño fijo del arreglo
+	
 	for (int i = 0; i < Operacion.length(); i++) {
 
 		if (isdigit(Operacion[i])) {
@@ -95,7 +109,7 @@ int main() {
 		cin.ignore();
 		cout << "Ingrese una operación matematica: ";
 		getline(cin, operacion);
-		dividirOperacion(Operadores, Numeros, operacion);
+		dividirOperacion(Operadores, Numeros, removerEspacios(operacion));
 		Operadores->print();
 		Numeros->print();
 		delete Operadores;
@@ -108,7 +122,7 @@ int main() {
 		cin.ignore();
 		cout << "Ingrese una operación matematica: ";
 		getline(cin, operacion);
-		dividirOperacion(Operadores, Numeros, operacion);
+		dividirOperacion(Operadores, Numeros, removerEspacios(operacion));
 		Operadores->print();
 		Numeros->print();
 		delete Operadores;
