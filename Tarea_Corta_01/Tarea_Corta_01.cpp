@@ -81,35 +81,6 @@ void dividirOperacion(Stack<char>* operadores, Stack<double>* numeros, string Op
 			}
 		}
 
-		for (int i = 0; i < Operacion.length(); i++) {
-
-			if (isdigit(Operacion[i])) {
-				if (numDecimal) {
-					decimal = decimal * 0.1;
-					numero = numero + (Operacion[i] - '0') * decimal;
-				}
-				else {
-					numero = numero * 10 + (Operacion[i] - '0');
-				}
-				guardarNum = true;
-			}
-			else if (Operacion[i] == '.') {
-				numDecimal = true;
-			}
-			else {
-
-				if (guardarNum) {
-					numeros->push(numero);
-					numero = 0;
-					decimal = 1;
-					guardarNum = false;
-					numDecimal = false;
-				}
-
-				operadores->push(Operacion[i]);
-			}
-		}
-
 		if (guardarNum) {
 			numeros->push(numero);
 		}
