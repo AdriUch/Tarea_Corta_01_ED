@@ -71,10 +71,8 @@ void dividirOperacion(Stack<char>* operadores, Stack<double>* numeros, string Op
 			for (int j = 0; j < numCaracter; j++) {
 				if (Operacion[i] == caracter[j]) {
 					opValido = true;
-					// Verifica si el operador ya está en el Stack antes de agregarlo
-					if (operadores->isEmpty() || operadores->topValue() != Operacion[i]) {
-						operadores->push(Operacion[i]);
-					}
+					operadores->push(Operacion[i]);
+					
 					break; // Sale del bucle después de encontrar un operador válido
 				}
 			}
