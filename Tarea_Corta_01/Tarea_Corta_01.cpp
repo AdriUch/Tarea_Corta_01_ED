@@ -47,7 +47,7 @@ void dividirOperacion(Stack<char>* operadores, Stack<double>* numeros, string Op
 	const int numCaracter = sizeof(caracter) / sizeof(caracter[0]); // Guarda el tamaño fijo del arreglo
 	for (int i = 0; i < Operacion.length(); i++) {
 
-		if (isdigit(Operacion[i])) { //Reconoce si es un valor numerico
+		if (isdigit(Operacion[i])) {
 			if (numDecimal) {
 				decimal = decimal * 0.1;
 				numero = numero + (Operacion[i] - '0') * decimal;
@@ -60,7 +60,7 @@ void dividirOperacion(Stack<char>* operadores, Stack<double>* numeros, string Op
 		else if (Operacion[i] == '.') {
 			numDecimal = true;
 		}
-		else if (!isdigit(Operacion[i])) {//Reconoce si es un valor no numerico
+		else {
 
 			if (guardarNum) {
 				numeros->push(numero);
@@ -69,21 +69,14 @@ void dividirOperacion(Stack<char>* operadores, Stack<double>* numeros, string Op
 				guardarNum = false;
 				numDecimal = false;
 			}
-			for (char valores : Operacion) {
-				for (int i = 0; i < numCaracter; i++) {
-					if (valores == caracter[i]) {
-						opValido = true;
-						operadores->push(valores);
-					}
 
-				}
-
-			}
+			operadores->push(Operacion[i]);
 		}
 
-		if (guardarNum) {
-			numeros->push(numero);
-		}
+	}
+
+	if (guardarNum) {
+		numeros->push(numero);
 	}
 }
 
