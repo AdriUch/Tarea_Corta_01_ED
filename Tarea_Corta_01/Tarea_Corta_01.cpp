@@ -1,5 +1,9 @@
 /*Tarea Corta 1
+<<<<<<< HEAD
 Autores: Carmen Hidalgo Paz & Adrian Ugalde
+=======
+Autores: Carmen Hidalgo Paz &
+>>>>>>> 6b411ea696b45a7388e783152c330d521945c32e
 Curso: Estructuras de Datos
 */
 
@@ -35,12 +39,16 @@ int ingresarTipoStack() {
 	return Opcion;
 }
 
+<<<<<<< HEAD
 //Funcion para hacer la separacion de numeros y operandos
+=======
+>>>>>>> 6b411ea696b45a7388e783152c330d521945c32e
 void dividirOperacion(Stack<char>* operadores, Stack<double>* numeros, string Operacion) {
 	double numero = 0;
 	double decimal = 1;
 	bool guardarNum = false;
 	bool numDecimal = false;
+<<<<<<< HEAD
 	bool opValido = false;
 	char operando = ' ';
 	const char caracter[] = { '+', '-', '*', '/', '^', '(', ')' }; // Crea un arreglo local con los operandos validos
@@ -81,6 +89,37 @@ void dividirOperacion(Stack<char>* operadores, Stack<double>* numeros, string Op
 			}
 		}
 
+=======
+
+	for (int i = 0; i < Operacion.length(); i++) {
+
+		if (isdigit(Operacion[i])) {
+			if (numDecimal) {
+				decimal = decimal * 0.1;
+				numero = numero + (Operacion[i] - '0') * decimal;
+			}
+			else {
+				numero = numero * 10 + (Operacion[i] - '0');
+			}
+			guardarNum = true;
+		}
+		else if (Operacion[i] == '.') {
+			numDecimal = true;
+		}
+		else {
+
+			if (guardarNum) {
+				numeros->push(numero);
+				numero = 0;
+				decimal = 1;
+				guardarNum = false;
+				numDecimal = false;
+			}
+
+			operadores->push(Operacion[i]);
+		}
+
+>>>>>>> 6b411ea696b45a7388e783152c330d521945c32e
 	}
 
 	if (guardarNum) {
