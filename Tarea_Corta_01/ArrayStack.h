@@ -1,5 +1,5 @@
 #pragma 
-#define DEFAULT_MAX 1024
+#define DEFAULT_MAX 5
 
 #include <stdexcept>
 #include <iostream>
@@ -16,6 +16,14 @@ private:
 	int max;
 	int top;
 
+	void updateArray() {
+		E* new_Elements = new E[max * 2];
+		std::copy(elements, elements + top, new_Elements);
+		delete[] elements;
+		elements = new_Elements;
+		max = max * 2;
+	}
+
 public:
 	ArrayStack(int max = DEFAULT_MAX) {
 		if (max < 1) {throw runtime_error("Invalid max size.");}
@@ -28,11 +36,7 @@ public:
 
 	void push(E element) {
 		if (top == max) {
-			E* new_Elements = new E[max*2];
-			std::copy(elements, elements + top, new_Elements);
-			delete[] elements;
-			elements = new_Elements;
-			max = max*2;
+			updateArray();
 		}
 		elements[top] = element;
 		top++;}
