@@ -63,9 +63,15 @@ public:
 		return top;}
 
 	void print() {
-		cout << "[";
+		/*cout << "[";
 		for (int i = top - 1; i >= 0; i--) {
 			cout << elements[i] << " ";}
+		cout << "]" << endl;*/
+
+		cout << "[";
+		for (int i = 0; i < top; i++) {
+			cout << elements[i] << " ";
+		}
 		cout << "]" << endl;
 	}
 };
